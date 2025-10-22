@@ -1,18 +1,19 @@
-🧠 RLHF Training Pipeline (From Scratch)
+# 🧠 RLHF Training Pipeline (From Scratch)
 
-This project implements a Reinforcement Learning with Human Feedback (RLHF) pipeline, consisting of:
+This project implements a **Reinforcement Learning with Human Feedback (RLHF)** pipeline, consisting of:
 
-Policy Model — fine-tuned on instructions
+1. **Policy Model** — fine-tuned on instructions
+2. **Reward Model** — learns to prefer better responses
+3. **PPO Fine-tuning** — optimizes the policy with reward signals
+4. **Testing** — to validate and chat with the final PPO model
 
-Reward Model — learns to prefer better responses
+Built entirely with **PyTorch** + **Hugging Face Transformers** 🚀
 
-PPO Fine-tuning — optimizes the policy with reward signals
+---
 
-Testing — to validate and chat with the final PPO model
+## 🗂️ Folder Structure
 
-Built entirely with PyTorch + Hugging Face Transformers 🚀
-
-📂 Folder Structure
+```
 RLHF Project/
 │
 ├── data/
@@ -35,132 +36,179 @@ RLHF Project/
 ├── requirements.txt
 ├── .venv/
 └── README.md
+```
 
+---
 
-⚙️ Environment Setup
-1️⃣ Create a Virtual Environment
+## ⚙️ Environment Setup
+
+### 1️⃣ Create a Virtual Environment
+
+```bash
 python -m venv .venv
-
+```
 
 Activate it:
 
-Windows:
+**Windows:**
 
+```bash
 .venv\Scripts\activate
+```
 
+**Linux/macOS:**
 
-Linux/macOS:
-
+```bash
 source .venv/bin/activate
+```
 
-2️⃣ Install Dependencies
+---
+
+### 2️⃣ Install Dependencies
+
+```bash
 pip install -r requirements.txt
+```
 
+**Example `requirements.txt`:**
 
-Example requirements.txt:
-
+```
 torch
 transformers
 datasets
 tqdm
+```
 
-🧩 Data Setup
+---
+
+## 🧩 Data Setup
 
 Before running the training scripts, you must create the folders and download the dataset.
 
-1️⃣ Create Folders
-mkdir -p data/raw data/processed models/policy models/reward models/ppo scripts
+### 1️⃣ Create Folders
 
-2️⃣ Download Dataset (Yahma/Alpaca-Cleaned)
+```bash
+mkdir -p data/raw data/processed models/policy models/reward models/ppo scripts
+```
+
+### 2️⃣ Download Dataset (Yahma/Alpaca-Cleaned)
 
 This dataset will serve as the base for policy and reward model training.
 
-Make sure you have Git LFS installed:
+Make sure you have **Git LFS** installed:
 
+```bash
 git lfs install
+```
 
+Then, download the dataset into the `data/raw` directory:
 
-Then, download the dataset into the data/raw directory:
-
+```bash
 cd data/raw
 git clone https://huggingface.co/datasets/yahma/alpaca-cleaned
 cd ../../
+```
 
+After this step, your `data/raw/alpaca-cleaned` folder will contain the original instruction–response pairs.
 
-After this step, your data/raw/alpaca-cleaned folder will contain the original instruction–response pairs.
+---
 
-🧠 RLHF Training Flow
-🟢 Step 1: Train Policy Model
+## 🧠 RLHF Training Flow
+
+### �\dfe2 Step 1: Train Policy Model
 
 Fine-tune the base model (like GPT-2) on the Alpaca dataset.
 
+```bash
 python scripts/policy_model.py
+```
 
+➡️ Output: `models/policy/`
 
-➡️ Output: models/policy/
+---
 
-🟡 Step 2: Train Reward Model
+### 🟡 Step 2: Train Reward Model
 
-Train a DistilBERT-based reward model on accepted vs rejected responses.
+Train a DistilBERT-based reward model on **accepted vs rejected** responses.
 
+```bash
 python scripts/reward_model.py
+```
 
+➡️ Output: `models/reward/reward_model.pt`
 
-➡️ Output: models/reward/reward_model.pt
+---
 
-🔴 Step 3: PPO Fine-Tuning
+### 🔴 Step 3: PPO Fine-Tuning
 
 Perform Proximal Policy Optimization (PPO) using the trained reward model.
 
+```bash
 python scripts/ppo_model.py
+```
 
+➡️ Output: `models/ppo/`
 
-➡️ Output: models/ppo/
+---
 
-🧪 Step 4: Test PPO Model
+### 🧪 Step 4: Test PPO Model
 
 Interactively test or evaluate the fine-tuned PPO model.
 
+```bash
 python scripts/test_ppo_model.py
-
+```
 
 🧠 Example Output:
 
+```
 Prompt: Explain reinforcement learning simply.
 Response: Reinforcement learning is when an AI learns from rewards and mistakes to make better choices.
+```
 
-🧰 Optional: Run All Steps in Sequence
+---
+
+## 🧪 Optional: Run All Steps in Sequence
 
 To automate the full RLHF flow:
 
+```bash
 python scripts/policy_model.py && \
 python scripts/reward_model.py && \
 python scripts/ppo_model.py && \
 python scripts/test_ppo_model.py
+```
 
-⚡ GPU Check
+---
+
+## ⚡ GPU Check
 
 Ensure CUDA is available before training:
 
+```bash
 python -c "import torch; print(torch.cuda.is_available())"
+```
 
+If `True`, GPU training is enabled ✅
 
-If True, GPU training is enabled ✅
+---
 
-🏁 Summary
-Step	Script	Description	Output
-1️⃣	policy_model.py	Fine-tunes base LLM	models/policy/
-2️⃣	reward_model.py	Trains reward scorer	models/reward/reward_model.pt
-3️⃣	ppo_model.py	RLHF PPO fine-tuning	models/ppo/
-4️⃣	test_ppo_model.py	Chat & test PPO model	Console output
-❤️ Credits
+## 🏁 Summary
+
+| Step | Script              | Description           | Output                          |
+| ---- | ------------------- | --------------------- | ------------------------------- |
+| 1️⃣  | `policy_model.py`   | Fine-tunes base LLM   | `models/policy/`                |
+| 2️⃣  | `reward_model.py`   | Trains reward scorer  | `models/reward/reward_model.pt` |
+| 3️⃣  | `ppo_model.py`      | RLHF PPO fine-tuning  | `models/ppo/`                   |
+| 4️⃣  | `test_ppo_model.py` | Chat & test PPO model | Console output                  |
+
+---
+
+## ❤️ Credits
 
 Built using:
 
-PyTorch
-
-Hugging Face Transformers
-
-Yahma/Alpaca-Cleaned Dataset
-
-PPO and RLHF ideas inspired by OpenAI InstructGPT
+* [PyTorch](https://pytorch.org/)
+* [Hugging Face Transformers](https://huggingface.co/transformers)
+* [Yahma/Alpaca-Cleaned Dataset](https://huggingface.co/datasets/yahma/alpaca-cleaned)
+* PPO and RLHF ideas inspired by [OpenAI InstructGPT](https://arxiv.org/abs/2203.02155)
