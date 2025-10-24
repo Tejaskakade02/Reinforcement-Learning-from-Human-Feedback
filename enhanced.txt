@@ -1,0 +1,15 @@
+in policy_model.py 
+load_dataset("yahma/alpaca-cleaned").select(range(5000))
+
+num_train_epochs=3
+per_device_train_batch_size=2
+learning_rate=5e-5
+
+model_name = "gpt2-medium"  # 345M parameters
+ or 
+
+ "EleutherAI/pythia-410m"
+
+
+ prompt = f"### Instruction:\n{example['instruction']}\n### Response:\n{example['output']}"
+ 
