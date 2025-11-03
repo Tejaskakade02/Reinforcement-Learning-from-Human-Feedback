@@ -161,10 +161,8 @@ python scripts/test_ppo_model.py
 
 🧠 Example Output:
 
-```
-Prompt: Explain reinforcement learning simply.
-Response: Reinforcement learning is when an AI learns from rewards and mistakes to make better choices.
-```
+![Model Output](assets/output.png)
+
 
 ---
 
